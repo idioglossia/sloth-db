@@ -1,2 +1,2 @@
 # sloth-db
-A slow "key" to "individual file as value" storage in java!
+A slow key value storage in Java, where keys are file names and values are file contents!

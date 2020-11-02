@@ -7,6 +7,10 @@ public class Validator {
         return true;
     }
 
+    public static boolean isValidKey(Object key){
+        return key instanceof Integer || key instanceof String;
+    }
+
     public static boolean isSupportedValue(Class aClass){
         String aClassName = aClass.getName();
         return aClassName.equals(String.class.getName()) && aClassName.equals(Byte[].class.getName());

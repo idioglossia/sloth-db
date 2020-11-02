@@ -5,6 +5,9 @@ import java.io.Serializable;
 public interface Collection<K, D extends Serializable> {
     Type getType();
     Class<D> valueClass();
+    default String extension() {
+        return "";
+    }
     String getName();
     int size();
     Value<D> get(K key);

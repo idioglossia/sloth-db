@@ -4,7 +4,7 @@ public class CollectionConfig {
 
     public static boolean match(String config, Collection collection){
         String[] lines = config.split("\n");
-        assert lines.length == 2;
+        assert lines.length == 3;
         boolean typeMatch = Collection.Type.valueOf(lines[0]) == collection.getType();
         boolean classMatch = false;
         try {

@@ -7,6 +7,10 @@ public class Validator {
         return true;
     }
 
+    public static boolean validExtension(String s){
+        return s.startsWith(".") && s.length() < 5;
+    }
+
     public static boolean isValidKey(Object key){
         return key instanceof Integer || key instanceof String;
     }

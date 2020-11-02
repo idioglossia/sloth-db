@@ -5,20 +5,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ListCollectionFileIdGenerator {
     private volatile Integer current = 1;
+    private final String extension;
 
-    public ListCollectionFileIdGenerator(File file) {
+    public ListCollectionFileIdGenerator(File file, String extension) {
+        this.extension = extension;
         try {
             Stream<Path> stream = Files.list(file.toPath());
             List<Path> paths = stream.filter(new DBValuePathPredict(file)).sorted().collect(Collectors.toList());
             if(paths.size() > 0){
                 Path path = paths.get(paths.size() - 1);
-                current = Integer.parseInt(path.toString().replaceAll(file.getAbsolutePath(), "").replaceAll("/", "").replaceAll("\\\\", ""));
+                current = Integer.parseInt(path.toString().replaceAll(extension, "").replaceAll(file.getAbsolutePath(), "").replaceAll("/", "").replaceAll("\\\\", ""));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

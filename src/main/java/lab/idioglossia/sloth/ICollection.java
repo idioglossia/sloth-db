@@ -6,15 +6,21 @@ import java.io.Serializable;
 import java.nio.file.Files;
 
 public class ICollection<K,D extends Serializable> implements Collection<K,D> {
-    private Class<D> valueClass;
-    private Type type;
-    private final FileWriter fileWriter;
-    private final FileReader fileReader;
     private final String dbPath;
     private final String collectionName;
+    private Type type;
+    private Class<D> valueClass;
+    private final FileWriter fileWriter;
+    private final FileReader fileReader;
+    private String extension;
     private volatile Integer size;
     private ListCollectionFileIdGenerator listCollectionFileIdGenerator;
     private File collectionFile;
+
+    public ICollection(String path, String collectionName, Type type, Class<D> valueClass, String extension, FileWriter fileWriter, FileReader fileReader){
+        this(path, collectionName, type, valueClass, fileWriter, fileReader);
+        this.extension = extension;
+    }
 
     public ICollection(String path, String collectionName, Type type, Class<D> valueClass, FileWriter fileWriter, FileReader fileReader){
         this.dbPath = path;
@@ -42,7 +48,7 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
             }
         }
         if(type.equals(Type.LIST)){
-            listCollectionFileIdGenerator = new ListCollectionFileIdGenerator(this.collectionFile);
+            listCollectionFileIdGenerator = new ListCollectionFileIdGenerator(this.collectionFile, extension);
         }
     }
 

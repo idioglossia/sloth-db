@@ -16,6 +16,7 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private volatile Integer size;
     private ListCollectionFileIdGenerator listCollectionFileIdGenerator;
     private File collectionFile;
+    private volatile boolean stopped = false;
 
     public ICollection(String path, String collectionName, Type type, Class<D> valueClass, String extension, FileWriter fileWriter, FileReader fileReader){
         this(path, collectionName, type, valueClass, fileWriter, fileReader);
@@ -86,6 +87,8 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
 
     @Override
     public int size() {
+        checkStopped();
+
         if(size == null){
             try {
                 size = (int) Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile)).count();
@@ -98,6 +101,8 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
 
     @Override
     public Value<D> get(K key) {
+        checkStopped();
+
         File file = new File(collectionFile, getKeyAsString(key));
 
         if(!file.exists())
@@ -157,6 +162,17 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
                 listCollectionFileIdGenerator.decrease();
             }
 
+        }
+    }
+
+    @Override
+    public void stop() {
+        this.stopped = true;
+    }
+
+    private void checkStopped(){
+        if(this.stopped){
+            throw new IllegalStateException("Cant work with a collection after its stopped");
         }
     }
 

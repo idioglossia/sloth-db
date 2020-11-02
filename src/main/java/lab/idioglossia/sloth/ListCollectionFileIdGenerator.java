@@ -10,10 +10,8 @@ import java.util.stream.Stream;
 
 public class ListCollectionFileIdGenerator {
     private volatile Integer current = 1;
-    private final String extension;
 
     public ListCollectionFileIdGenerator(File file, String extension) {
-        this.extension = extension;
         try {
             Stream<Path> stream = Files.list(file.toPath());
             List<Path> paths = stream.filter(new DBValuePathPredict(file)).sorted().collect(Collectors.toList());

@@ -26,7 +26,6 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
         this.dbPath = path;
         this.fileWriter = fileWriter;
         this.fileReader = fileReader;
-        assert Validator.isValidCollectionName(collectionName);
         assert Validator.isSupportedValue(valueClass);
         this.collectionName = collectionName;
         this.type = type;

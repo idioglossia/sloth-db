@@ -1,12 +1,6 @@
 package lab.idioglossia.sloth;
 
 public class Validator {
-
-    //TODO
-    public static boolean isValidCollectionName(String collectionName){
-        return true;
-    }
-
     public static boolean isValidExtension(String s){
         return s.equals("") || (s.startsWith(".") && s.length() < 5);
     }

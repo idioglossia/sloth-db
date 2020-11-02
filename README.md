@@ -12,3 +12,6 @@ Currently Sloth DB supports MAP and LIST collections and can story `byte[]` or `
 ## Use case
 
 Sloth DB is only good to store small values in files. File names are keys and directory names are collection names. Main usage for storage might be cases when you need to easily find your data when you are looking at the DB directory; Which can be helpful to store some simple data for web applications since the data is easily accessible through valid paths.
+
+For example if you create a MAP collection with name "users" and add data with key "james", any other application can easily access this data through this path:
+`{dbPath}/users/james`

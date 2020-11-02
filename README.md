@@ -8,3 +8,7 @@ I'm not even sure why would you use it! It just simply writes files in an organi
 
 [This Sample](https://github.com/idioglossia/sloth-db/blob/main/src/test/java/Sample.java) can show you how to create a storage and collections.
 Currently Sloth DB supports MAP and LIST collections and can story `byte[]` or `String`.
+
+## Use case
+
+Sloth DB is only good to store small values in files. File names are keys and directory names are collection names. Main usage for storage might be cases when you need to easily find your data when you are looking at the DB directory; Which can be helpful to store some simple data for web applications since the data is easily accessible through valid paths.

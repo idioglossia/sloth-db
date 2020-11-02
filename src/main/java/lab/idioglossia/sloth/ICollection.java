@@ -15,6 +15,7 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private final FileReader fileReader;
     private String extension = "";
     private volatile int size = -1;
+    private volatile boolean sizeSet = false;
     private ListCollectionFileIdGenerator listCollectionFileIdGenerator;
     private File collectionFile;
     private volatile boolean stopped = false;
@@ -97,10 +98,10 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     @Override
     public int size() {
         checkStopped();
-
-        if(size == -1){
+        if(!sizeSet){
             try {
                 size = (int) Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile)).count();
+                sizeSet = true;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

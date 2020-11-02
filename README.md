@@ -1,3 +1,5 @@
+<img src="https://github.com/idioglossia/sloth-db/blob/main/cover.png?raw=1" />
+
 # Sloth DB
 
 A slow key value storage in Java, where keys are file names and values are file contents!

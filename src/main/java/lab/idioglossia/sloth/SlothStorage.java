@@ -1,7 +1,11 @@
 package lab.idioglossia.sloth;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
@@ -15,8 +19,11 @@ public class SlothStorage implements Storage {
     private final Lock lock = new ReentrantLock();
     private final Map<String, Collection> collectionMap = new HashMap<>();
 
-    public SlothStorage(String path, int concurrentWrites, int concurrentReads) {
+    public SlothStorage(String path, int concurrentWrites, int concurrentReads) throws IOException {
         this.path = path;
+        if (!Files.exists(Paths.get(path))) {
+            Files.createDirectory(Paths.get(path));
+        }
         this.fileWriter = new FileWriter(concurrentWrites);
         this.fileReader = new FileReader(concurrentReads);
     }
@@ -65,13 +72,11 @@ public class SlothStorage implements Storage {
             if(!collectionMap.containsKey(name)){
                 return false;
             }
+            collectionMap.remove(name);
 
             File file = new File(path, name);
             if(file.isDirectory()){
-                if (file.delete()) {
-                    collectionMap.remove(name);
-                    return true;
-                }
+                return file.delete();
             }
 
             return false;
@@ -82,7 +87,7 @@ public class SlothStorage implements Storage {
     }
 
     @Override
-    public List<Collection<?,?>> getCollections() {
+    public List<Collection> getCollections() {
         return new ArrayList<>(collectionMap.values());
     }
 

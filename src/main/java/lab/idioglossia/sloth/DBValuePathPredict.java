@@ -13,6 +13,6 @@ public class DBValuePathPredict implements Predicate<Path> {
 
     @Override
     public boolean test(Path path) {
-        return !path.toString().replaceAll(file.getAbsolutePath(), "").startsWith(".");
+        return !path.toString().replaceAll(file.getAbsolutePath(), "").replaceAll("/", "").replaceAll("\\\\", "").startsWith(".");
     }
 }

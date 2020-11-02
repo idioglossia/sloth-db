@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private final String dbPath;
@@ -12,18 +13,15 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private Class<D> valueClass;
     private final FileWriter fileWriter;
     private final FileReader fileReader;
-    private String extension;
-    private volatile Integer size;
+    private String extension = "";
+    private volatile int size = -1;
     private ListCollectionFileIdGenerator listCollectionFileIdGenerator;
     private File collectionFile;
     private volatile boolean stopped = false;
 
     public ICollection(String path, String collectionName, Type type, Class<D> valueClass, String extension, FileWriter fileWriter, FileReader fileReader){
-        this(path, collectionName, type, valueClass, fileWriter, fileReader);
         this.extension = extension;
-    }
-
-    public ICollection(String path, String collectionName, Type type, Class<D> valueClass, FileWriter fileWriter, FileReader fileReader){
+        assert Validator.isValidExtension(extension);
         this.dbPath = path;
         this.fileWriter = fileWriter;
         this.fileReader = fileReader;
@@ -33,6 +31,10 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
         this.type = type;
         this.valueClass = valueClass;
         init();
+    }
+
+    public ICollection(String path, String collectionName, Type type, Class<D> valueClass, FileWriter fileWriter, FileReader fileReader){
+        this(path, collectionName, type, valueClass, "", fileWriter, fileReader);
     }
 
     private void init() {
@@ -47,14 +49,21 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
             }else {
                 createConfigFile(configFile);
             }
+        }else {
+            try {
+                Files.createDirectory(Paths.get(this.collectionFile.getPath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         if(type.equals(Type.LIST)){
-            listCollectionFileIdGenerator = new ListCollectionFileIdGenerator(this.collectionFile, extension);
+            listCollectionFileIdGenerator = new ListCollectionFileIdGenerator(this.collectionFile, this.extension);
         }
     }
 
     private void createConfigFile(File configFile) {
         try {
+            System.out.println(configFile.getPath());
             configFile.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -89,7 +98,7 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     public int size() {
         checkStopped();
 
-        if(size == null){
+        if(size == -1){
             try {
                 size = (int) Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile)).count();
             } catch (IOException e) {
@@ -103,10 +112,20 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     public Value<D> get(K key) {
         checkStopped();
 
-        File file = new File(collectionFile, getKeyAsString(key));
+        File file = new File(collectionFile, getKeyAsString(key) + extension);
 
         if(!file.exists())
-            return null;
+            return new Value<D>() {
+                @Override
+                public D getData() {
+                    return null;
+                }
+
+                @Override
+                public boolean exists() {
+                    return false;
+                }
+            };
 
         if(valueClass.getName().equals(String.class.getName())) {
             String value = fileReader.readAsString(file);
@@ -177,10 +196,11 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     }
 
     private void write(String key, Value<D> value, boolean inc){
+        File file = new File(collectionFile, key + extension);
         if(valueClass.getName().equals(String.class.getName())){
-            fileWriter.write(new File(collectionFile, key), (String) value.getData());
+            fileWriter.write(file, (String) value.getData());
         }else {
-            fileWriter.write(new File(collectionFile, key), (byte[]) value.getData());
+            fileWriter.write(file, (byte[]) value.getData());
         }
         if(inc){
             synchronized (this){

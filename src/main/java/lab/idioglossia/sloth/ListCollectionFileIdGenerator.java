@@ -17,7 +17,13 @@ public class ListCollectionFileIdGenerator {
             List<Path> paths = stream.filter(new DBValuePathPredict(file)).sorted().collect(Collectors.toList());
             if(paths.size() > 0){
                 Path path = paths.get(paths.size() - 1);
-                current = Integer.parseInt(path.toString().replaceAll(extension, "").replaceAll(file.getAbsolutePath(), "").replaceAll("/", "").replaceAll("\\\\", ""));
+                current = Integer.parseInt(path.toString()
+                        .replaceAll(extension, "")
+                        .replaceAll(file.getAbsolutePath(), "")
+                        .replaceAll("/", "")
+                        .replaceAll("\\\\", "")
+                ) + 1;
+                System.out.println("current: " + current);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

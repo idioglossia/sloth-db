@@ -7,8 +7,8 @@ public class Validator {
         return true;
     }
 
-    public static boolean validExtension(String s){
-        return s.startsWith(".") && s.length() < 5;
+    public static boolean isValidExtension(String s){
+        return s.equals("") || (s.startsWith(".") && s.length() < 5);
     }
 
     public static boolean isValidKey(Object key){

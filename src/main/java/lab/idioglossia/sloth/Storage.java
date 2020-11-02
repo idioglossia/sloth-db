@@ -8,6 +8,6 @@ public interface Storage {
     <K, V extends Serializable> Collection<K, V> getCollectionOfType(String name, Collection.Type type, Class<V> dataClass);
     <K, V extends Serializable> Collection<K, V> getCollectionOfType(String name, Collection.Type type, Class<V> dataClass, String extension);
     boolean removeCollection(String name);
-    List<Collection<?, ?>> getCollections();
+    List<Collection> getCollections();
     Set<String> getCollectionNames();
 }

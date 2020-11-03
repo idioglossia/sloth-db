@@ -63,7 +63,6 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
 
     private void createConfigFile(File configFile) {
         try {
-            System.out.println(configFile.getPath());
             configFile.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);

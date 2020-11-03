@@ -25,7 +25,6 @@ public class ListCollectionFileIdGenerator {
             if(paths.size() > 0){
                 Path path = paths.get(paths.size() - 1);
                 current = parseInteger(path, extension, file) + 1;
-                System.out.println(current);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

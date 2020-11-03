@@ -7,7 +7,7 @@ No file locks available since two processes are not supposed to work with same S
 I'm not even sure why would you use it! It just simply writes files in an organized way!
 
 [This Sample](https://github.com/idioglossia/sloth-db/blob/main/src/test/java/Sample.java) can show you how to create a storage and collections.
-Currently Sloth DB supports MAP and LIST collections and can story `byte[]` or `String`.
+Currently Sloth DB supports MAP and LIST collections and can store `byte[]` or `String`.
 
 ## Use case
 

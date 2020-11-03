@@ -111,38 +111,19 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     @Override
     public Value<D> get(K key) {
         checkStopped();
+        String keyAsString = getKeyAsString(key);
+        File file = new File(collectionFile, keyAsString + extension);
 
-        File file = new File(collectionFile, getKeyAsString(key) + extension);
-
-        if(!file.exists())
-            return new Value<D>() {
-                @Override
-                public D getData() {
-                    return null;
-                }
-
-                @Override
-                public boolean exists() {
-                    return false;
-                }
-            };
+        if(!file.exists()){
+            return new QueryResponseValue<D>(null, false);
+        }
 
         if(valueClass.getName().equals(String.class.getName())) {
             String value = fileReader.readAsString(file);
-            return new Value<D>() {
-                @Override
-                public D getData() {
-                    return (D) value;
-                }
-            };
+            return new QueryResponseValue<D>((D) value, keyAsString);
         }else {
             byte[] bytes = fileReader.readAsByteArray(file);
-            return new Value<D>() {
-                @Override
-                public D getData() {
-                    return (D) bytes;
-                }
-            };
+            return new QueryResponseValue<D>((D) bytes, keyAsString);
         }
     }
 
@@ -152,21 +133,25 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     }
 
     @Override
-    public void save(K key, Value<D> value) {
+    public Value<D> save(K key, Value<D> value) {
         if(type.equals(Type.LIST)){
-            save(value);
+            return save(value);
         }else {
-            write(getKeyAsString(key), value, true);
+            String keyAsString = getKeyAsString(key);
+            write(keyAsString, value, true);
+            return new SaveResponseValue<D>(value, keyAsString);
         }
     }
 
     @Override
-    public void save(Value<D> value) {
+    public Value<D> save(Value<D> value) {
         if(type.equals(Type.MAP)){
             throw new RuntimeException("Calling save(value) on map collection is illegal");
         }
-        write(String.valueOf(listCollectionFileIdGenerator.getId()), value, true);
+        String id = String.valueOf(listCollectionFileIdGenerator.getId());
+        write(id, value, true);
         listCollectionFileIdGenerator.increase();
+        return new SaveResponseValue<D>(value, id);
     }
 
     @Override

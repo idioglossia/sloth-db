@@ -12,8 +12,8 @@ public interface Collection<K, D extends Serializable> {
     int size();
     Value<D> get(K key);
     void update(K key, Value<D> value);
-    void save(K key, Value<D> value);
-    void save(Value<D> value);
+    Value<D> save(K key, Value<D> value);
+    Value<D> save(Value<D> value);
     void remove(K key);
     void stop();
 

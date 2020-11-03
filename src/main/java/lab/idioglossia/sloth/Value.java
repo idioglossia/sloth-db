@@ -4,5 +4,10 @@ import java.io.Serializable;
 
 public interface Value<D extends Serializable> {
     D getData();
-    default boolean exists() {return true;}
+    default boolean exists() {
+        return true;
+    }
+    default String id() {
+        return null;
+    }
 }

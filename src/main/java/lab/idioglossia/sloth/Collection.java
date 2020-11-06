@@ -16,6 +16,7 @@ public interface Collection<K, D extends Serializable> {
     Value<D> save(Value<D> value);
     void remove(K key);
     void stop();
+    java.util.Collection<K> getKeys();
 
     enum Type {
         MAP, LIST

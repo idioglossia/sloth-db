@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private final String dbPath;
@@ -171,6 +177,28 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     @Override
     public void stop() {
         this.stopped = true;
+    }
+
+    @Override
+    public synchronized java.util.Collection<K> getKeys() {
+        try {
+            List<K> keys = new ArrayList<>();
+            Stream<Path> stream = Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile));
+            List<Path> paths = Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile)).sorted().collect(Collectors.toList());
+            paths.forEach(path -> {
+                String key = PathUtil.cleanPath(path, collectionFile.getAbsolutePath()).replace(extension, "");
+                if(type.equals(Type.MAP)){
+                    keys.add((K) key);
+                }else {
+                    keys.add((K) new Integer(Integer.parseInt(key)));
+                }
+            });
+            if(type.equals(Type.LIST))
+                Collections.sort((List<Integer>) keys);
+            return keys;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void checkStopped(){

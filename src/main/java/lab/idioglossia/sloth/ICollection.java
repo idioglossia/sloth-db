@@ -168,7 +168,8 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
                 synchronized (this){
                     size--;
                 }
-                listCollectionFileIdGenerator.decrease();
+                if(type.equals(Type.LIST))
+                    listCollectionFileIdGenerator.decrease();
             }
 
         }

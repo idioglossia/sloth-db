@@ -11,7 +11,7 @@ public class Validator {
 
     public static boolean isSupportedValue(Class aClass){
         String aClassName = aClass.getName();
-        return aClassName.equals(String.class.getName()) && aClassName.equals(Byte[].class.getName());
+        return aClassName.equals(String.class.getName()) && aClassName.equals(byte[].class.getName());
     }
 
 }

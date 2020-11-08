@@ -161,7 +161,7 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
 
     @Override
     public synchronized void remove(K key) {
-        File file = new File(collectionFile, getKeyAsString(key));
+        File file = new File(collectionFile, getKeyAsString(key) + extension);
         if(file.exists()){
             boolean delete = file.delete();
             if(delete){

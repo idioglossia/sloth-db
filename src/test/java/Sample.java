@@ -9,7 +9,7 @@ public class Sample {
         SlothStorage slothStorage = new SlothStorage("/home/sepehr/environment/.db/", 3, 10);
         Collection<Integer, String> collection = slothStorage.getCollectionOfType("posts", Collection.Type.LIST, String.class, ".json");
         System.out.println("Collection size before save: " + collection.size());
-        for(int i = 0; i < 100; i++){
+        for(int i = 0; i < 5; i++){
             Value<String> save = collection.save(new Value<String>() {
                 @Override
                 public String getData() {
@@ -21,6 +21,18 @@ public class Sample {
         System.out.println("Collection size after save: " + collection.size());
         System.out.println(collection.get(1).getData());
         System.out.println(collection.getKeys());
+
+        System.out.println("---- update ----");
+
+        collection.update(1, new Value<String>() {
+            @Override
+            public String getData() {
+                return "{\"key\":\"new value\"}";
+            }
+        });
+        System.out.println(collection.get(1).getData());
+
+        System.out.println("---- map ----");
 
         Collection<String, String> configsCollection = slothStorage.getCollectionOfType("configs", Collection.Type.MAP, String.class);
         configsCollection.save("main", new Value<String>() {

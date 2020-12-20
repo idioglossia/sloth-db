@@ -36,7 +36,7 @@ public class SlothStorage implements Storage {
     @Override
     public <K, V extends Serializable> Collection<K, V> getCollectionOfType(String name, Collection.Type type, Class<V> dataClass, String extension) {
         try {
-            lock.tryLock();
+            lock.lock();
 
             AtomicReference<Collection<K,V>> collectionAtomicReference = new AtomicReference<>();
 
@@ -62,7 +62,7 @@ public class SlothStorage implements Storage {
     @Override
     public boolean removeCollection(String name) {
         try {
-            lock.tryLock();
+            lock.lock();
             if(!collectionMap.containsKey(name)){
                 return false;
             }

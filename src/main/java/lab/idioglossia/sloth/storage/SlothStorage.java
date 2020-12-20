@@ -1,4 +1,9 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.storage;
+
+import lab.idioglossia.sloth.io.FileReader;
+import lab.idioglossia.sloth.io.FileWriter;
+import lab.idioglossia.sloth.collection.Collection;
+import lab.idioglossia.sloth.collection.ICollection;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +21,7 @@ public class SlothStorage implements Storage {
     private final FileReader fileReader;
     private final String path;
     private final Lock lock = new ReentrantLock();
-    private final Map<String, Collection> collectionMap = new HashMap<>();
+    private final Map<String, lab.idioglossia.sloth.collection.Collection> collectionMap = new HashMap<>();
 
     public SlothStorage(String path, int concurrentWrites, int concurrentReads) throws IOException {
         this.path = path;
@@ -28,21 +33,21 @@ public class SlothStorage implements Storage {
     }
 
     @Override
-    public <K, V extends Serializable> Collection<K, V> getCollectionOfType(String name, Collection.Type type, Class<V> dataClass) {
+    public <K, V extends Serializable> lab.idioglossia.sloth.collection.Collection<K, V> getCollectionOfType(String name, lab.idioglossia.sloth.collection.Collection.Type type, Class<V> dataClass) {
         return this.getCollectionOfType(name, type, dataClass, "");
     }
 
     @Override
-    public <K, V extends Serializable> Collection<K, V> getCollectionOfType(String name, Collection.Type type, Class<V> dataClass, String extension) {
+    public <K, V extends Serializable> lab.idioglossia.sloth.collection.Collection<K, V> getCollectionOfType(String name, lab.idioglossia.sloth.collection.Collection.Type type, Class<V> dataClass, String extension) {
         try {
             lock.lock();
 
-            AtomicReference<Collection<K,V>> collectionAtomicReference = new AtomicReference<>();
+            AtomicReference<lab.idioglossia.sloth.collection.Collection<K,V>> collectionAtomicReference = new AtomicReference<>();
 
-            Collection<K, V> collection = collectionMap.computeIfAbsent(name, new Function<String, Collection<K, V>>() {
+            lab.idioglossia.sloth.collection.Collection<K, V> collection = collectionMap.computeIfAbsent(name, new Function<String, lab.idioglossia.sloth.collection.Collection<K, V>>() {
                 @Override
-                public Collection<K, V> apply(String s) {
-                    Collection<K, V> collection = new ICollection<>(path, name, type, dataClass, extension, fileWriter, fileReader);
+                public lab.idioglossia.sloth.collection.Collection<K, V> apply(String s) {
+                    lab.idioglossia.sloth.collection.Collection<K, V> collection = new ICollection<>(path, name, type, dataClass, extension, fileWriter, fileReader);
                     collectionAtomicReference.set(collection);
                     return collection;
                 }

@@ -1,4 +1,4 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.util;
 
 import java.nio.file.Path;
 

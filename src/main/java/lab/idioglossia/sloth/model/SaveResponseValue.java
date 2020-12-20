@@ -1,4 +1,6 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.model;
+
+import lab.idioglossia.sloth.collection.Value;
 
 import java.io.Serializable;
 

@@ -1,4 +1,6 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.storage;
+
+import lab.idioglossia.sloth.collection.Collection;
 
 import java.io.Serializable;
 import java.util.List;

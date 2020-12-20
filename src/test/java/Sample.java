@@ -1,6 +1,6 @@
-import lab.idioglossia.sloth.Collection;
-import lab.idioglossia.sloth.SlothStorage;
-import lab.idioglossia.sloth.Value;
+import lab.idioglossia.sloth.collection.Collection;
+import lab.idioglossia.sloth.storage.SlothStorage;
+import lab.idioglossia.sloth.collection.Value;
 
 import java.io.IOException;
 

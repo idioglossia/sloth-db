@@ -1,4 +1,4 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.util;
 
 public class Validator {
     public static boolean isValidExtension(String s){

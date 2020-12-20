@@ -1,4 +1,4 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.io;
 
 import java.io.File;
 import java.io.IOException;

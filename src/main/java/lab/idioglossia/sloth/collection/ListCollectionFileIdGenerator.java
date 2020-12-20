@@ -1,4 +1,6 @@
-package lab.idioglossia.sloth;
+package lab.idioglossia.sloth.collection;
+
+import lab.idioglossia.sloth.util.DBValuePathPredict;
 
 import java.io.File;
 import java.io.IOException;

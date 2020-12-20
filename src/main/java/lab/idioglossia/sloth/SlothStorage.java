@@ -38,27 +38,21 @@ public class SlothStorage implements Storage {
         try {
             lock.tryLock();
 
-            try {
-                lock.tryLock();
+            AtomicReference<Collection<K,V>> collectionAtomicReference = new AtomicReference<>();
 
-                AtomicReference<Collection<K,V>> collectionAtomicReference = new AtomicReference<>();
-
-                Collection<K, V> collection = collectionMap.computeIfAbsent(name, new Function<String, Collection<K, V>>() {
-                    @Override
-                    public Collection<K, V> apply(String s) {
-                        Collection<K, V> collection = new ICollection<>(path, name, type, dataClass, extension, fileWriter, fileReader);
-                        collectionAtomicReference.set(collection);
-                        return collection;
-                    }
-                });
-
-                if(collection != null){
+            Collection<K, V> collection = collectionMap.computeIfAbsent(name, new Function<String, Collection<K, V>>() {
+                @Override
+                public Collection<K, V> apply(String s) {
+                    Collection<K, V> collection = new ICollection<>(path, name, type, dataClass, extension, fileWriter, fileReader);
+                    collectionAtomicReference.set(collection);
                     return collection;
-                }else {
-                    return collectionAtomicReference.get();
                 }
-            }finally {
-                lock.unlock();
+            });
+
+            if(collection != null){
+                return collection;
+            }else {
+                return collectionAtomicReference.get();
             }
         }finally {
             lock.unlock();

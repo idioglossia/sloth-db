@@ -1,9 +1,9 @@
 package lab.idioglossia.sloth.storage;
 
-import lab.idioglossia.sloth.io.FileReader;
-import lab.idioglossia.sloth.io.FileWriter;
 import lab.idioglossia.sloth.collection.Collection;
 import lab.idioglossia.sloth.collection.ICollection;
+import lab.idioglossia.sloth.io.FileReader;
+import lab.idioglossia.sloth.io.FileWriter;
 
 import java.io.File;
 import java.io.IOException;

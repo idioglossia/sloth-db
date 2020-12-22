@@ -1,0 +1,14 @@
+package lab.idioglossia.sloth.io.in;
+
+import lab.idioglossia.sloth.io.Pipeline;
+import lab.idioglossia.sloth.model.ReadFileModel;
+import lab.idioglossia.sloth.model.ReadFileOutput;
+import lab.idioglossia.sloth.util.SharedLock;
+
+public class UnLockStage implements Pipeline.Stage<ReadFileModel, ReadFileOutput> {
+    @Override
+    public boolean process(ReadFileModel readFileModel, ReadFileOutput readFileOutput) {
+        SharedLock.getInstance().unlock(readFileModel.getFile().getAbsolutePath().hashCode());
+        return true;
+    }
+}

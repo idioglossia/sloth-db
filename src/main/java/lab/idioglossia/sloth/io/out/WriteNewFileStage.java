@@ -1,8 +1,12 @@
-package lab.idioglossia.sloth.io;
+package lab.idioglossia.sloth.io.out;
 
+import lab.idioglossia.sloth.io.Pipeline;
 import lab.idioglossia.sloth.model.WriteFileModel;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class WriteNewFileStage implements Pipeline.Stage<WriteFileModel, Void> {
 

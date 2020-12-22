@@ -20,12 +20,10 @@ public class FileWriter {
     public void write(File file, String content){
         try {
             semaphore.acquire();
-            lock(file.getAbsolutePath());
             pipeline.run(new WriteFileModel(file, content), null);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            unlock(file.getAbsolutePath());
             semaphore.release();
         }
     }
@@ -33,28 +31,11 @@ public class FileWriter {
     public void write(File file, byte[] bytes){
         try {
             semaphore.acquire();
-            lock(file.getAbsolutePath());
             pipeline.run(new WriteFileModel(file, bytes), null);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            unlock(file.getAbsolutePath());
             semaphore.release();
-        }
-    }
-
-    private void lock(String key) throws InterruptedException {
-        synchronized (lockedKeys) {
-            while (!lockedKeys.add(key)) {
-                lockedKeys.wait();
-            }
-        }
-    }
-
-    private void unlock(String key) {
-        synchronized (lockedKeys) {
-            lockedKeys.remove(key);
-            lockedKeys.notifyAll();
         }
     }
 }

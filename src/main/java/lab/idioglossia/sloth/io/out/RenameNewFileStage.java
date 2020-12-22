@@ -1,5 +1,6 @@
-package lab.idioglossia.sloth.io;
+package lab.idioglossia.sloth.io.out;
 
+import lab.idioglossia.sloth.io.Pipeline;
 import lab.idioglossia.sloth.model.WriteFileModel;
 
 import java.io.File;

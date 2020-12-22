@@ -127,10 +127,6 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
         String keyAsString = getKeyAsString(key);
         File file = new File(collectionFile, keyAsString + extension);
 
-        if(!file.exists()){
-            return new QueryResponseValue<D>(null, false);
-        }
-
         if(valueClass.getName().equals(String.class.getName())) {
             String value = fileReader.readAsString(file);
             return new QueryResponseValue<D>((D) value, keyAsString);

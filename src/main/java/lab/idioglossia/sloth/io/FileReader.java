@@ -1,24 +1,32 @@
 package lab.idioglossia.sloth.io;
 
+import lab.idioglossia.sloth.model.ReadFileModel;
+import lab.idioglossia.sloth.model.ReadFileOutput;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.concurrent.Semaphore;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FileReader {
     private final Semaphore semaphore;
+    private final Pipeline<ReadFileModel, ReadFileOutput> readPipeline;
 
     public FileReader(int permits) {
-        semaphore = new Semaphore(permits);
+        this.semaphore = new Semaphore(permits);
+        this.readPipeline = PipelineFactory.getReadPipeline();
     }
 
     public byte[] readAsByteArray(File file){
         try {
             semaphore.acquire();
-            return Files.readAllBytes(file.toPath());
-        } catch (InterruptedException | IOException e) {
+            ReadFileOutput readFileOutput = new ReadFileOutput();
+            readPipeline.run(new ReadFileModel(file), readFileOutput);
+            if(readFileOutput.getE() != null){
+                throw new RuntimeException(readFileOutput.getE());
+            }
+            return readFileOutput.getBytes();
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }finally {
             semaphore.release();
@@ -26,14 +34,6 @@ public class FileReader {
     }
 
     public String readAsString(File file){
-        try {
-            semaphore.acquire();
-            byte[] encoded = Files.readAllBytes(file.toPath());
-            return new String(encoded, UTF_8);
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
-        }finally {
-            semaphore.release();
-        }
+        return new String(readAsByteArray(file), UTF_8);
     }
 }

@@ -13,6 +13,6 @@ public class LockStage implements Pipeline.Stage<ReadFileModel, ReadFileOutput> 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return false;
+        return true;
     }
 }

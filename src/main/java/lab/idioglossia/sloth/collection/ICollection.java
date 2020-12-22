@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     private final String dbPath;
@@ -188,7 +187,6 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
     public synchronized java.util.Collection<K> getKeys() {
         try {
             List<K> keys = new ArrayList<>();
-            Stream<Path> stream = Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile));
             List<Path> paths = Files.list(this.collectionFile.toPath()).filter(new DBValuePathPredict(this.collectionFile)).sorted().collect(Collectors.toList());
             paths.forEach(path -> {
                 String key = PathUtil.cleanPath(path, collectionFile.getAbsolutePath()).replace(extension, "");

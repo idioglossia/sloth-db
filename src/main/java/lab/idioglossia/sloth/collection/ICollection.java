@@ -128,10 +128,10 @@ public class ICollection<K,D extends Serializable> implements Collection<K,D> {
 
         if(valueClass.getName().equals(String.class.getName())) {
             String value = fileReader.readAsString(file);
-            return new QueryResponseValue<D>((D) value, keyAsString);
+            return new QueryResponseValue<D>((D) value, value != null, keyAsString);
         }else {
             byte[] bytes = fileReader.readAsByteArray(file);
-            return new QueryResponseValue<D>((D) bytes, keyAsString);
+            return new QueryResponseValue<D>((D) bytes, bytes != null, keyAsString);
         }
     }
 

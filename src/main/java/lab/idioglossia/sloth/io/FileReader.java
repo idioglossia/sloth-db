@@ -34,6 +34,7 @@ public class FileReader {
     }
 
     public String readAsString(File file){
-        return new String(readAsByteArray(file), UTF_8);
+        byte[] bytes = readAsByteArray(file);
+        return bytes != null ? new String(bytes, UTF_8) : null;
     }
 }

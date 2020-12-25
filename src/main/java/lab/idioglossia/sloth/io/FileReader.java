@@ -2,6 +2,8 @@ package lab.idioglossia.sloth.io;
 
 import lab.idioglossia.sloth.model.ReadFileModel;
 import lab.idioglossia.sloth.model.ReadFileOutput;
+import lab.idioglossia.sloth.util.SharedLock;
+import lab.idioglossia.sloth.util.TransactionManager;
 
 import java.io.File;
 import java.util.concurrent.Semaphore;
@@ -21,12 +23,40 @@ public class FileReader {
         try {
             semaphore.acquire();
             ReadFileOutput readFileOutput = new ReadFileOutput();
-            readPipeline.run(new ReadFileModel(file), readFileOutput);
+
+            TransactionManager transactionManager = new TransactionManager(new TransactionManager.Config().setIgnoreRollbackExceptions(true))
+                    .addTransaction(new TransactionManager.Transaction() {
+                        @Override
+                        public void process() {
+                            try {
+                                SharedLock.getInstance().lock(file.getPath().hashCode());
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        @Override
+                        public void onRollBack() {
+                            SharedLock.getInstance().unlock(file.getPath().hashCode());
+                        }
+                    }).addTransaction(new TransactionManager.Transaction() {
+                        @Override
+                        public void process() {
+                            readPipeline.run(new ReadFileModel(file), readFileOutput);
+                        }
+                    }).addTransaction(new TransactionManager.Transaction() {
+                        @Override
+                        public void process() {
+                            SharedLock.getInstance().unlock(file.getPath().hashCode());
+                        }
+                    });
+
+            transactionManager.commit();
             if(readFileOutput.getE() != null){
-                throw new RuntimeException(readFileOutput.getE());
+                throw readFileOutput.getE();
             }
             return readFileOutput.getBytes();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
             semaphore.release();

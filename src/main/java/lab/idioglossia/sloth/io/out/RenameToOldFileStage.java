@@ -20,8 +20,10 @@ public class RenameToOldFileStage implements Pipeline.Stage<WriteFileModel, Void
             }
         }
 
+
         File file = writeFileModel.getFile();
-        return new File(file.toURI()).renameTo(destFile);
+        file.renameTo(destFile);
+        return true;
     }
 
 }

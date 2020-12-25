@@ -13,15 +13,11 @@ public class RenameNewFileStage implements Pipeline.Stage<WriteFileModel, Void> 
         File newFile = new File(writeFileModel.getFile().getAbsolutePath() + ".new");
 
         if(!newFile.exists()) {
-            try {
-                newFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            throw new RuntimeException(".new file doesn't exist");
         }
 
         File file = writeFileModel.getFile();
-        return new File(newFile.toURI()).renameTo(file);
+        return newFile.renameTo(file);
     }
 
 }

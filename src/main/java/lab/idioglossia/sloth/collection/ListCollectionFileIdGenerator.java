@@ -49,6 +49,8 @@ public class ListCollectionFileIdGenerator {
         return Integer.parseInt(path.toString()
                 .replaceAll(extension, "")
                 .replaceAll(file.getAbsolutePath(), "")
+                .replaceAll(".new", "")
+                .replaceAll(".old", "")
                 .replaceAll("/", "")
                 .replaceAll("\\\\", "")
         );

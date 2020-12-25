@@ -14,17 +14,13 @@ public class WriteNewFileStage implements Pipeline.Stage<WriteFileModel, Void> {
     public boolean process(WriteFileModel writeFileModel, Void o) {
         File file = writeFileModel.getFile();
 
-        boolean cont = false;
-        if(file.exists()){
-            cont = true;
-            file = getNewFile(file);
-        }
+        file = getNewFile(file);
 
         if(writeFileModel.isBinary())
             writeBinary(file, writeFileModel.getBinaryContent());
         else
             writeString(file, writeFileModel.getContent());
-        return cont;
+        return true;
     }
 
     private File getNewFile(File file) {
@@ -54,9 +50,7 @@ public class WriteNewFileStage implements Pipeline.Stage<WriteFileModel, Void> {
             if(fos != null) {
                 try {
                     fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException ignored) {}
             }
         }
     }
